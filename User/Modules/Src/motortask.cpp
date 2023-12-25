@@ -90,8 +90,8 @@ void PidSetRemote()
     /**
      * Yaw轴6020电机的PID参数初始化
      */
-    yaw_motor_6020.pid_ang.Set(20.f, 0.f, 10.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);        // n转每秒
-    yaw_motor_6020.pid_rpm.Set(55.f, 0.f, 10.f, (3000.f + 300.f) * 5.f, 500.f * 5.f, 500.f * 5.f, 3000.f * 5.f);  // 限定最大值，防止突震，输出限幅-30000-30000
+    yaw_motor_6020.pid_ang.Set(45.f, 0.f, 10.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);          // n转每秒
+    yaw_motor_6020.pid_rpm.Set(55.f, 0.f, 10.f, (3000.f + 300.f) * 0.8f, 500.f * 5.f, 500.f * 5.f, 3000.f * 0.8f);  // 限定最大值，防止突震，输出限幅-30000-30000
 }
 
 /**
@@ -126,21 +126,33 @@ void RemotePitchPidDemo2()
  */
 void RemotePitchPidDemo3()
 {
-    pitch_motor_2006.pid_ang.Set(57.5f, 0.f, 0.f, (216.f + 21.6f) * 2.5f, 1.f * 2.f, 1.f * 2.f, 216.f * 2.5f);
-    pitch_motor_2006.pid_rpm.Set(40.f, 0.1f, 1.f, (1000.f + 100.f) * 5.f, 150.f * 4.f, 100.f * 4.f, 1000.f * 5.5f);
+    pitch_motor_2006.pid_ang.Set(50.f, 0.f, 0.f, (216.f + 21.6f) * 2.5f, 1.f * 2.f, 1.f * 2.f, 216.f * 2.5f);
+    pitch_motor_2006.pid_rpm.Set(35.f, 0.1f, 1.f, (1000.f + 100.f) * 5.f, 200.f * 4.f, 100.f * 4.f, 1000.f * 5.5f);
 }
 
 /**
  * @brief       遥控模式——俯角Pitch轴模式4:当Pitch轴更为接近目标值时，增大双环KP，增大，减少KD，增强抗干扰能力；增大KI，最大弥补静差，提高控制精度。
- * @brief       同时输出应该控制上限，避免过冲引发震荡。
  *   @arg       None
  * @retval      None
  * @note        None
  */
 void RemotePitchPidDemo4()
 {
+    pitch_motor_2006.pid_ang.Set(45.f, 0.f, 0.f, (216.f + 21.6f) * 2.5f, 1.f * 2.f, 1.f * 2.f, 216.f * 2.5f);
+    pitch_motor_2006.pid_rpm.Set(15.f, 0.15f, 1.f, (1000.f + 100.f) * 4.f, 400.f * 4.f, 100.f * 4.f, 1000.f * 5.5f);
+}
+
+/**
+ * @brief       遥控模式——俯角Pitch轴模式5:当Pitch轴更为接近目标值时，增大双环KP，增大，减少KD，增强抗干扰能力；增大KI，最大弥补静差，提高控制精度。
+ * @brief       同时最终输出应该控制上限，避免过冲引发震荡。
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+void RemotePitchPidDemo5()
+{
     pitch_motor_2006.pid_ang.Set(45.f, 0.f, 0.f, (216.f + 21.6f) * 2.5f, 1.f * 2.5f, 1.f * 2.f, 216.f * 2.5f);
-    pitch_motor_2006.pid_rpm.Set(20.f, 0.25f, 0.5f, (1000.f + 100.f) * 3.5f, 350.f * 4.f, 100.f * 4.f, 1000.f * 3.f);
+    pitch_motor_2006.pid_rpm.Set(25.f, 0.25f, 0.5f, (1000.f + 100.f) * 2.5f, 500.f * 4.f, 100.f * 4.f, 1000.f * 3.f);
 }
 
 /**
@@ -151,8 +163,8 @@ void RemotePitchPidDemo4()
  */
 void RemoteYawPidDemo1()
 {
-    yaw_motor_6020.pid_ang.Set(15.f, 0.f, 5.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(50.f, 0.f, 5.f, (3000.f + 300.f) * 6.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 6.f);
+    yaw_motor_6020.pid_ang.Set(30.f, 0.f, 5.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
+    yaw_motor_6020.pid_rpm.Set(50.f, 0.f, 5.f, (3000.f + 300.f) * 0.8f, 500.f * 10.f, 500.f * 10.f, 3000.f * 0.8f);
 }
 
 /**
@@ -163,8 +175,8 @@ void RemoteYawPidDemo1()
  */
 void RemoteYawPidDemo2()
 {
-    yaw_motor_6020.pid_ang.Set(25.f, 0.f, 1.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(60.f, 0.f, 1.f, (3000.f + 300.f) * 6.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 6.f);
+    yaw_motor_6020.pid_ang.Set(35.f, 0.f, 1.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
+    yaw_motor_6020.pid_rpm.Set(60.f, 0.f, 1.f, (3000.f + 300.f) * 3.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 3.f);
 }
 
 /**

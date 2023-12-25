@@ -48,17 +48,17 @@ void GimbalTask()
                     pitchpid_switchflag = pitch2_pid;
                 }
             } else {
-                if (pitch_motor_2006.pid_ang.err[0] > 3.f || pitch_motor_2006.pid_ang.err[0] < -3.f) {
+                if (pitch_motor_2006.pid_ang.err[0] > 2.8f || pitch_motor_2006.pid_ang.err[0] < -2.8f) {
                     pitchpid_switchflag = pitch3_pid;
-                } else if (pitch_motor_2006.pid_ang.err[0] > 1.5f || pitch_motor_2006.pid_ang.err[0] < -1.5f) {
-                    pitchpid_switchflag = base_pid;
-                } else {
+                } else if (pitch_motor_2006.pid_ang.err[0] > 0.5f || pitch_motor_2006.pid_ang.err[0] < -0.5f) {
                     pitchpid_switchflag = pitch4_pid;
+                } else {
+                    pitchpid_switchflag = pitch5_pid;
                 }
             }
 
             // 当Yaw轴误差达到一定范围时，更改PID参数进行自适应调节
-            if (yaw_motor_6020.pid_ang.err[0] > 5.f || yaw_motor_6020.pid_ang.err[0] < -5.f) {
+            if (yaw_motor_6020.pid_ang.err[0] > 10.f || yaw_motor_6020.pid_ang.err[0] < -10.f) {
                 yawpid_switchflag = base_pid;
             } else if (yaw_motor_6020.pid_ang.err[0] > 1.5f || yaw_motor_6020.pid_ang.err[0] < -1.5f) {
                 yawpid_switchflag = yaw1_pid;
@@ -148,6 +148,9 @@ void PidSetSwitch()
             case pitch4_pid:
                 RemotePitchPidDemo4();
                 break;
+            case pitch5_pid:
+                RemotePitchPidDemo5();
+                break;
         }
         // 遥控模式Yaw轴PID调制
         switch (yawpid_switchflag) {
@@ -179,6 +182,9 @@ void PidSetSwitch()
                 break;
             case pitch4_pid:
                 RemotePitchPidDemo4();
+                break;
+            case pitch5_pid:
+                RemotePitchPidDemo5();
                 break;
         }
         // 键鼠模式Yaw轴PID调制

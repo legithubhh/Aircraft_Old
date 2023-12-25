@@ -140,15 +140,20 @@ typedef enum {
     pitch4_pid = 4,
 
     /**
+     * Pitch模式5
+     */
+    pitch5_pid = 5,
+
+    /**
      * Yaw模式1
      */
 
-    yaw1_pid = 5,
+    yaw1_pid = 6,
 
     /**
      * Yaw模式2
      */
-    yaw2_pid = 6
+    yaw2_pid = 7
 
 } PidSwitchMode;
 /* Exported variables -------------------------------------------------------*/
@@ -163,6 +168,7 @@ void RemotePitchPidDemo1();
 void RemotePitchPidDemo2();
 void RemotePitchPidDemo3();
 void RemotePitchPidDemo4();
+void RemotePitchPidDemo5();
 void RemoteYawPidDemo1();
 void RemoteYawPidDemo2();
 void PidSetKeymouse();
