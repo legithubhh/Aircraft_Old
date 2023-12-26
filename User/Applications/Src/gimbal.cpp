@@ -48,7 +48,7 @@ void GimbalTask()
                     pitchpid_switchflag = pitch2_pid;
                 }
             } else {
-                if (pitch_motor_2006.pid_ang.err[0] > 2.8f || pitch_motor_2006.pid_ang.err[0] < -2.8f) {
+                if (pitch_motor_2006.pid_ang.err[0] > 3.5f || pitch_motor_2006.pid_ang.err[0] < -3.5f) {
                     pitchpid_switchflag = pitch3_pid;
                 } else if (pitch_motor_2006.pid_ang.err[0] > 0.5f || pitch_motor_2006.pid_ang.err[0] < -0.5f) {
                     pitchpid_switchflag = pitch4_pid;
@@ -58,7 +58,7 @@ void GimbalTask()
             }
 
             // 当Yaw轴误差达到一定范围时，更改PID参数进行自适应调节
-            if (yaw_motor_6020.pid_ang.err[0] > 10.f || yaw_motor_6020.pid_ang.err[0] < -10.f) {
+            if (yaw_motor_6020.pid_ang.err[0] > 15.f || yaw_motor_6020.pid_ang.err[0] < -15.f) {
                 yawpid_switchflag = base_pid;
             } else if (yaw_motor_6020.pid_ang.err[0] > 1.5f || yaw_motor_6020.pid_ang.err[0] < -1.5f) {
                 yawpid_switchflag = yaw1_pid;
@@ -83,6 +83,32 @@ void GimbalTask()
             AutoControlMode();
         } else {
             PidFlagInit(keymouse_pid_flag);
+            if (pitch_motor_2006.pid_ang.fdb < 0.5) {
+                if (pitch_motor_2006.pid_ang.err[0] > 2.5f || pitch_motor_2006.pid_ang.err[0] < -2.5f) {
+                    pitchpid_switchflag = base_pid;
+                } else if (pitch_motor_2006.pid_ang.err[0] > 1.f || pitch_motor_2006.pid_ang.err[0] < -1.f) {
+                    pitchpid_switchflag = pitch1_pid;
+                } else {
+                    pitchpid_switchflag = pitch2_pid;
+                }
+            } else {
+                if (pitch_motor_2006.pid_ang.err[0] > 3.5f || pitch_motor_2006.pid_ang.err[0] < -3.5f) {
+                    pitchpid_switchflag = pitch3_pid;
+                } else if (pitch_motor_2006.pid_ang.err[0] > 0.5f || pitch_motor_2006.pid_ang.err[0] < -0.5f) {
+                    pitchpid_switchflag = pitch4_pid;
+                } else {
+                    pitchpid_switchflag = pitch5_pid;
+                }
+            }
+
+            // 当Yaw轴误差达到一定范围时，更改PID参数进行自适应调节
+            if (yaw_motor_6020.pid_ang.err[0] > 15.f || yaw_motor_6020.pid_ang.err[0] < -15.f) {
+                yawpid_switchflag = base_pid;
+            } else if (yaw_motor_6020.pid_ang.err[0] > 1.5f || yaw_motor_6020.pid_ang.err[0] < -1.5f) {
+                yawpid_switchflag = yaw1_pid;
+            } else {
+                yawpid_switchflag = yaw2_pid;
+            }
             PidSetSwitch();
             KeymouseControlMode();
         }
