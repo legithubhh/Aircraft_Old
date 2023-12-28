@@ -114,13 +114,47 @@ void GimbalTask()
         }
     }
 
-    // 右拨杆在下，云台急停模式
+    // 右拨杆在下，发弹急停模式
     if (Remote.Pack.s2 == 2) {
         PidFlagInit(remote_pid_flag);
-        PidSetSwitch();
-        GimbalStopControlMode();
-    }
+        // 左拨杆在上或中，遥控器手控模式 OR 左拨杆在下，遥控器切换到自瞄模式
+        if (Remote.Pack.s1 == 1 || Remote.Pack.s1 == 3) {
+            PidFlagInit(remote_pid_flag);
+            // 当Pitch轴误差达到一定范围时，更改PID参数进行自适应调节，分俯仰角调节以适应重心后偏
+            if (pitch_motor_2006.pid_ang.fdb < 0.5) {
+                if (pitch_motor_2006.pid_ang.err[0] > 2.5f || pitch_motor_2006.pid_ang.err[0] < -2.5f) {
+                    pitchpid_switchflag = base_pid;
+                } else if (pitch_motor_2006.pid_ang.err[0] > 1.f || pitch_motor_2006.pid_ang.err[0] < -1.f) {
+                    pitchpid_switchflag = pitch1_pid;
+                } else {
+                    pitchpid_switchflag = pitch2_pid;
+                }
+            } else {
+                if (pitch_motor_2006.pid_ang.err[0] > 3.5f || pitch_motor_2006.pid_ang.err[0] < -3.5f) {
+                    pitchpid_switchflag = pitch3_pid;
+                } else if (pitch_motor_2006.pid_ang.err[0] > 0.5f || pitch_motor_2006.pid_ang.err[0] < -0.5f) {
+                    pitchpid_switchflag = pitch4_pid;
+                } else {
+                    pitchpid_switchflag = pitch5_pid;
+                }
+            }
 
+            // 当Yaw轴误差达到一定范围时，更改PID参数进行自适应调节
+            if (yaw_motor_6020.pid_ang.err[0] > 15.f || yaw_motor_6020.pid_ang.err[0] < -15.f) {
+                yawpid_switchflag = base_pid;
+            } else if (yaw_motor_6020.pid_ang.err[0] > 1.5f || yaw_motor_6020.pid_ang.err[0] < -1.5f) {
+                yawpid_switchflag = yaw1_pid;
+            } else {
+                yawpid_switchflag = yaw2_pid;
+            }
+            PidSetSwitch();
+            GimbalStopControlMode();
+        } else {
+            PidFlagInit(autoaim_pid_flag);
+            PidSetSwitch();
+            GimbalStopControlMode();
+        }
+    }
     // 集中发送CAN信号
     CANx_PackProcess_Data(&hcan1, CAN_GIMBAL_SEND_ID, 0x08, friction_wheel_3508[0].pid_rpm.output, friction_wheel_3508[1].pid_rpm.output,
                           turn_magazine_2006.pid_rpm.output, pitch_motor_2006.pid_rpm.output);                      // CAN1总线0X200对应电机ID，ID号1-4分别为摩擦轮3508电机1，摩擦轮3508电机2，拨弹盘2006电机，Pitch轴2006电机
@@ -192,7 +226,7 @@ void PidSetSwitch()
     }
     // 键鼠模式参数
     else if (controlmode_pidset_flag == keymouse_pid_flag) {
-        PidSetKeymouse();
+        PidSetRemote();
         // 键鼠模式Pitch轴PID调制
         switch (pitchpid_switchflag) {
             case base_pid:

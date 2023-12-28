@@ -91,7 +91,7 @@ void PidSetRemote()
      * Yaw轴6020电机的PID参数初始化
      */
     yaw_motor_6020.pid_ang.Set(45.f, 0.f, 10.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);            // n转每秒
-    yaw_motor_6020.pid_rpm.Set(15.f, 0.f, 10.f, (3000.f + 300.f) * 0.65f, 500.f * 5.f, 500.f * 5.f, 3000.f * 0.65f);  // 限定最大值，防止突震，输出限幅-30000-30000
+    yaw_motor_6020.pid_rpm.Set(15.f, 0.f, 10.f, (3000.f + 300.f) * 4.65f, 500.f * 5.f, 500.f * 5.f, 3000.f * 4.65f);  // 限定最大值，防止突震，输出限幅-30000-30000
 }
 
 /**
@@ -164,7 +164,7 @@ void RemotePitchPidDemo5()
 void RemoteYawPidDemo1()
 {
     yaw_motor_6020.pid_ang.Set(30.f, 0.f, 5.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(10.f, 0.f, 5.f, (3000.f + 300.f) * 0.6f, 500.f * 10.f, 500.f * 10.f, 3000.f * 0.6f);
+    yaw_motor_6020.pid_rpm.Set(10.f, 0.f, 5.f, (3000.f + 300.f) * 4.6f, 500.f * 10.f, 500.f * 10.f, 3000.f * 2.6f);
 }
 
 /**
@@ -176,7 +176,7 @@ void RemoteYawPidDemo1()
 void RemoteYawPidDemo2()
 {
     yaw_motor_6020.pid_ang.Set(35.f, 0.f, 1.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(30.f, 0.f, 1.f, (3000.f + 300.f) * 3.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 3.f);
+    yaw_motor_6020.pid_rpm.Set(30.f, 0.f, 1.f, (3000.f + 300.f) * 5.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 5.f);
 }
 
 /**
@@ -466,13 +466,34 @@ void GimbalStopTargetSet()
     gimbaltarget.turn_magazine_target = 0;
     turn_magazine_2006.pid_rpm.ref = gimbaltarget.turn_magazine_target;
 
+    // // Pitch轴目标值设置
+    // gimbaltarget.pitch_target = 0;
+    // VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);
+    // pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
+
+    // // Yaw轴目标值设置
+    // gimbaltarget.yaw_target = 0;
+    // VAL_LIMIT(gimbaltarget.yaw_target, -30.0f, 30.0f);
+    // yaw_motor_6020.pid_ang.ref = -gimbaltarget.yaw_target;
+
     // Pitch轴目标值设置
-    gimbaltarget.pitch_target = 0;
-    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);
+    if (Remote.Pack.ch1 < 1.f && Remote.Pack.ch1 > -1.f) {
+        gimbaltarget.pitch_target = Remote.Pack.ch1 * 0.f;
+    } else if (Remote.Pack.ch1 > 1.f) {
+        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 23.f;
+    }  // 实测仰角为负，俯角为正————抬头遥杆向后输出负值，低头遥杆向前输出正值
+    else {
+        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 14.f;
+    }
+    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);  // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为23度
     pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // Yaw轴目标值设置
-    gimbaltarget.yaw_target = 0;
-    VAL_LIMIT(gimbaltarget.yaw_target, -30.0f, 30.0f);
+    if (Remote.Pack.ch2 < 5.f && Remote.Pack.ch2 > -5.f) {
+        gimbaltarget.yaw_target = Remote.Pack.ch2 * 0.f;
+    } else {
+        gimbaltarget.yaw_target = Remote.Pack.ch2 / 660.f * 30.f;
+    }
+    VAL_LIMIT(gimbaltarget.yaw_target, -30.0f, 30.0f);  // 遥控器左手柄左右通道控制，最大值为向左向右30度
     yaw_motor_6020.pid_ang.ref = -gimbaltarget.yaw_target;
 }
