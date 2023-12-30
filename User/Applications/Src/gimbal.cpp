@@ -60,7 +60,7 @@ void GimbalTask()
             // 当Yaw轴误差达到一定范围时，更改PID参数进行自适应调节
             if (yaw_motor_6020.pid_ang.err[0] > 15.f || yaw_motor_6020.pid_ang.err[0] < -15.f) {
                 yawpid_switchflag = base_pid;
-            } else if (yaw_motor_6020.pid_ang.err[0] > 1.5f || yaw_motor_6020.pid_ang.err[0] < -1.5f) {
+            } else if (yaw_motor_6020.pid_ang.err[0] > 2.5f || yaw_motor_6020.pid_ang.err[0] < -2.5f) {
                 yawpid_switchflag = yaw1_pid;
             } else {
                 yawpid_switchflag = yaw2_pid;

@@ -79,7 +79,7 @@ void PidSetRemote()
     /**
      * 拨弹盘2006电机的PID参数初始化
      */
-    turn_magazine_2006.pid_rpm.Set(10.f, 0.1f, 1.f, (1000.f + 100.f) * 10.f, 10.f * 0.f, 100.f * 1.f, 1000.f * 10.f);  // 限定最大值，防止突震，输出限幅-10000-10000
+    turn_magazine_2006.pid_rpm.Set(10.f, 0.f, 1.f, (1000.f + 100.f) * 10.f, 10.f * 0.f, 100.f * 1.f, 1000.f * 10.f);  // 限定最大值，防止突震，输出限幅-10000-10000
 
     /**
      * Pitch轴2006电机的PID参数初始化
@@ -90,8 +90,8 @@ void PidSetRemote()
     /**
      * Yaw轴6020电机的PID参数初始化
      */
-    yaw_motor_6020.pid_ang.Set(45.f, 0.f, 10.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);            // n转每秒
-    yaw_motor_6020.pid_rpm.Set(15.f, 0.f, 10.f, (3000.f + 300.f) * 4.65f, 500.f * 5.f, 500.f * 5.f, 3000.f * 4.65f);  // 限定最大值，防止突震，输出限幅-30000-30000
+    yaw_motor_6020.pid_ang.Set(45.f, 0.f, 10.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);             // n转每秒
+    yaw_motor_6020.pid_rpm.Set(25.f, 0.001f, 10.f, (3000.f + 300.f) * 0.8f, 500.f * 1.f, 500.f * 5.f, 3000.f * 0.8f);  // 限定最大值，防止突震，输出限幅-30000-30000
 }
 
 /**
@@ -127,7 +127,7 @@ void RemotePitchPidDemo2()
 void RemotePitchPidDemo3()
 {
     pitch_motor_2006.pid_ang.Set(50.f, 0.f, 0.f, (216.f + 21.6f) * 2.5f, 1.f * 2.f, 1.f * 2.f, 216.f * 2.5f);
-    pitch_motor_2006.pid_rpm.Set(35.f, 0.1f, 1.f, (1000.f + 100.f) * 5.f, 200.f * 4.f, 100.f * 4.f, 1000.f * 5.5f);
+    pitch_motor_2006.pid_rpm.Set(25.f, 0.1f, 1.f, (1000.f + 100.f) * 5.f, 400.f * 4.f, 100.f * 4.f, 1000.f * 5.5f);
 }
 
 /**
@@ -139,7 +139,7 @@ void RemotePitchPidDemo3()
 void RemotePitchPidDemo4()
 {
     pitch_motor_2006.pid_ang.Set(45.f, 0.f, 0.f, (216.f + 21.6f) * 2.5f, 1.f * 2.f, 1.f * 2.f, 216.f * 2.5f);
-    pitch_motor_2006.pid_rpm.Set(15.f, 0.15f, 1.f, (1000.f + 100.f) * 4.f, 400.f * 4.f, 100.f * 4.f, 1000.f * 5.5f);
+    pitch_motor_2006.pid_rpm.Set(15.f, 0.15f, 1.f, (1000.f + 100.f) * 4.f, 500.f * 4.f, 100.f * 4.f, 1000.f * 5.5f);
 }
 
 /**
@@ -152,7 +152,7 @@ void RemotePitchPidDemo4()
 void RemotePitchPidDemo5()
 {
     pitch_motor_2006.pid_ang.Set(45.f, 0.f, 0.f, (216.f + 21.6f) * 2.5f, 1.f * 2.5f, 1.f * 2.f, 216.f * 2.5f);
-    pitch_motor_2006.pid_rpm.Set(20.f, 0.25f, 0.5f, (1000.f + 100.f) * 2.5f, 500.f * 4.f, 100.f * 4.f, 1000.f * 3.f);
+    pitch_motor_2006.pid_rpm.Set(30.f, 0.25f, 0.5f, (1000.f + 100.f) * 2.5f, 700.f * 4.f, 100.f * 4.f, 1000.f * 3.f);
 }
 
 /**
@@ -163,8 +163,8 @@ void RemotePitchPidDemo5()
  */
 void RemoteYawPidDemo1()
 {
-    yaw_motor_6020.pid_ang.Set(30.f, 0.f, 5.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(10.f, 0.f, 5.f, (3000.f + 300.f) * 4.6f, 500.f * 10.f, 500.f * 10.f, 3000.f * 2.6f);
+    yaw_motor_6020.pid_ang.Set(40.f, 0.f, 5.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
+    yaw_motor_6020.pid_rpm.Set(20.f, 0.001f, 5.f, (3000.f + 300.f) * 0.6f, 500.f * 1.f, 500.f * 10.f, 3000.f * 0.6f);
 }
 
 /**
@@ -175,8 +175,8 @@ void RemoteYawPidDemo1()
  */
 void RemoteYawPidDemo2()
 {
-    yaw_motor_6020.pid_ang.Set(35.f, 0.f, 1.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(30.f, 0.f, 1.f, (3000.f + 300.f) * 5.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 5.f);
+    yaw_motor_6020.pid_ang.Set(60.f, 0.f, 1.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
+    yaw_motor_6020.pid_rpm.Set(50.f, 0.f, 1.f, (3000.f + 300.f) * 3.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 3.f);
 }
 
 /**
@@ -346,25 +346,25 @@ void YawRotation()
 void RemoteAimingTargetSet()
 {
     // 摩擦轮目标值设置
-    gimbaltarget.friction_wheel_target = 7500;
+    gimbaltarget.friction_wheel_target = 6.5f * 60.f * 3591.f / 187.f;         // =7500 依据减速比n*(60*3591/187)得n转每秒
     friction_wheel_3508[0].pid_rpm.ref = -gimbaltarget.friction_wheel_target;  // 左摩擦轮顺时针转动，右摩擦轮逆时针转动。
 
     friction_wheel_3508[1].pid_rpm.ref = gimbaltarget.friction_wheel_target;
 
     // 拨弹盘目标值设置
-    gimbaltarget.turn_magazine_target = -1000;
+    gimbaltarget.turn_magazine_target = -1.125f * 60.0f * 36.0f;  // =2430 依据减速比n*(60*36/1)得n转每秒
     turn_magazine_2006.pid_rpm.ref = gimbaltarget.turn_magazine_target;
 
     // Pitch轴目标值设置
     if (Remote.Pack.ch1 < 1.f && Remote.Pack.ch1 > -1.f) {
         gimbaltarget.pitch_target = Remote.Pack.ch1 * 0.f;
     } else if (Remote.Pack.ch1 > 1.f) {
-        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 23.f;
+        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 22.f;
     }  // 实测仰角为负，俯角为正————抬头遥杆向后输出负值，低头遥杆向前输出正值
     else {
         gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 14.f;
     }
-    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);  // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为23度
+    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 22.0f);  // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为22度
     pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // Yaw轴目标值设置
@@ -399,8 +399,8 @@ void KeymouseAimingTargetSet()
     if (Remote.Pack.mouse_y < 2.f && Remote.Pack.mouse_y > -2.f) {
         Remote.Pack.mouse_y = 0.f;
     }                                                             // 死区设置，防止误漂移。
-    gimbaltarget.pitch_target -= Remote.Pack.mouse_y * 0.00085f;  // 根据鼠标灵敏度结合操作手的操作习惯实际测试后调整数值。测试鼠标DPI为1600。                                                        // 实测仰角为负，俯角为正————鼠标向后输出正值，鼠标向前输出负值
-    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);          // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为23度
+    gimbaltarget.pitch_target += Remote.Pack.mouse_y * 0.00085f;  // 根据鼠标灵敏度结合操作手的操作习惯实际测试后调整数值。测试鼠标DPI为1600。鼠标前移抬头，后移低头。                                                        // 实测仰角为负，俯角为正————鼠标向后输出正值，鼠标向前输出负值
+    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 22.0f);          // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为22度
     pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // Yaw轴目标值设置
@@ -434,12 +434,12 @@ void AutoAimingTargetSet()
     if (Remote.Pack.ch1 < 1.f && Remote.Pack.ch1 > -1.f) {
         gimbaltarget.pitch_target = 0.f;
     } else if (Remote.Pack.ch1 > 1.f) {
-        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 23.f;
+        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 22.f;
     }  // 实测仰角为负，俯角为正————抬头遥杆向后输出负值，低头遥杆向前输出正值
     else {
         gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 14.f;
     }
-    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);  // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为23度
+    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 22.0f);  // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为22度
     pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // Yaw轴目标值设置
@@ -468,7 +468,7 @@ void GimbalStopTargetSet()
 
     // // Pitch轴目标值设置
     // gimbaltarget.pitch_target = 0;
-    // VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);
+    // VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 22.0f);
     // pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // // Yaw轴目标值设置
@@ -480,12 +480,12 @@ void GimbalStopTargetSet()
     if (Remote.Pack.ch1 < 1.f && Remote.Pack.ch1 > -1.f) {
         gimbaltarget.pitch_target = Remote.Pack.ch1 * 0.f;
     } else if (Remote.Pack.ch1 > 1.f) {
-        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 23.f;
+        gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 22.f;
     }  // 实测仰角为负，俯角为正————抬头遥杆向后输出负值，低头遥杆向前输出正值
     else {
         gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 14.f;
     }
-    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 23.0f);  // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为23度
+    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 22.0f);  // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为22度
     pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // Yaw轴目标值设置
