@@ -59,21 +59,21 @@ void DBUS_Def::SbusToRc(uint8_t* pData)
 void DBUS_Def::KeyVoluation()
 {
     for (short i = 0; i < 16; i++) {
-        if (Remote.Pack.key & (0x01 << i)) {
-            Remote.Pack.KeyPress[i] = 1;
+        if (Pack.key & (0x01 << i)) {
+            Pack.KeyPress[i] = 1;
         } else {
-            Remote.Pack.KeyPress[i] = 0;
+            Pack.KeyPress[i] = 0;
         }
     }
 
-    if (Remote.Pack.press_l == 0x01) {
-        Remote.Pack.KeyPress[MOUSE_L] = 1;
+    if (Pack.press_l == 0x01) {
+        Pack.KeyPress[MOUSE_L] = 1;
     } else {
-        Remote.Pack.KeyPress[MOUSE_L] = 0;
+        Pack.KeyPress[MOUSE_L] = 0;
     }
-    if (Remote.Pack.press_r == 0x01) {
-        Remote.Pack.KeyPress[MOUSE_R] = 1;
+    if (Pack.press_r == 0x01) {
+        Pack.KeyPress[MOUSE_R] = 1;
     } else {
-        Remote.Pack.KeyPress[MOUSE_R] = 0;
+        Pack.KeyPress[MOUSE_R] = 0;
     }
 }

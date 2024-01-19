@@ -37,6 +37,10 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "INS.h"
+#include "gimbal.h"
+#include "pcvision.h"
+#include "referee.h"
 /* Exported macro ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -46,10 +50,13 @@ void UserCAN1RxCpltCallBack(CAN_RxBuffer* CAN_RxBuffer);
 void UserCAN2RxCpltCallBack(CAN_RxBuffer* CAN_RxBuffer);
 void UserSystemCommInit();
 void RemoteTask();
+void RefereeTask();
+void VisionReciveTask();
+void VisionTransmitTask();
 void DMMotorEnable();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __FILE_H_ */
+#endif /* __COMMUNICATION_H_ */

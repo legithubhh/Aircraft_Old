@@ -27,8 +27,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Communication.h"
-#include "INS.h"
-#include "gimbal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,6 +47,10 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 osThreadId gimbalTaskHandle;
+osThreadId visionReciveTaskHandle;
+osThreadId visionTransmitTaskHandle;
+osThreadId refereeTaskHandle;
+
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId remoteTaskHandle;
@@ -60,6 +62,9 @@ osThreadId wheelrCtrlTaskHandle;
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 void StartGimbalTask(void const *argument);
+void StartRefereeTask(void const *argument);
+void StartVisionReciveTask(void const *argument);
+void StartVisionTransmitTask(void const *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const *argument);
@@ -121,11 +126,11 @@ void MX_FREERTOS_Init(void)
     defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
     /* definition and creation of remoteTask */
-    osThreadDef(remoteTask, StartRemoteTask, osPriorityNormal, 0, 128);
+    osThreadDef(remoteTask, StartRemoteTask, osPriorityAboveNormal, 0, 128);
     remoteTaskHandle = osThreadCreate(osThread(remoteTask), NULL);
 
     /* definition and creation of insTask */
-    osThreadDef(insTask, StartINSTask, osPriorityAboveNormal, 0, 256);
+    osThreadDef(insTask, StartINSTask, osPriorityNormal, 0, 256);
     insTaskHandle = osThreadCreate(osThread(insTask), NULL);
 
     /* definition and creation of legCtrlTask */
@@ -144,6 +149,15 @@ void MX_FREERTOS_Init(void)
     /* add threads, ... */
     osThreadDef(gimbalTask, StartGimbalTask, osPriorityHigh, 0, 512);
     gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
+
+    osThreadDef(refereeTask, StartRefereeTask, osPriorityHigh, 0, 256);
+    refereeTaskHandle = osThreadCreate(osThread(refereeTask), NULL);
+
+    osThreadDef(visionReciveTask, StartVisionReciveTask, osPriorityNormal, 0, 128);
+    visionReciveTaskHandle = osThreadCreate(osThread(visionReciveTask), NULL);
+
+    osThreadDef(visionTransmitTask, StartVisionTransmitTask, osPriorityNormal, 0, 128);
+    visionTransmitTaskHandle = osThreadCreate(osThread(visionTransmitTask), NULL);
     /* USER CODE END RTOS_THREADS */
 }
 
@@ -267,12 +281,38 @@ void StartWheelCtrlTask(void const *argument)
 /* USER CODE BEGIN Application */
 void StartGimbalTask(void const *argument)
 {
-    /* USER CODE BEGIN StartWheelCtrlTask */
     /* Infinite loop */
     for (;;) {
         GimbalTask();
         osDelay(1);
     }
-    /* USER CODE END StartWheelCtrlTask */
 }
+
+void StartRefereeTask(void const *argument)
+{
+    /* Infinite loop */
+    for (;;) {
+        RefereeTask();
+        osDelay(1);
+    }
+}
+
+void StartVisionReciveTask(void const *argument)
+{
+    /* Infinite loop */
+    for (;;) {
+        VisionReciveTask();
+        osDelay(1);
+    }
+}
+
+void StartVisionTransmitTask(void const *argument)
+{
+    /* Infinite loop */
+    for (;;) {
+        VisionTransmitTask();
+        osDelay(1);
+    }
+}
+
 /* USER CODE END Application */

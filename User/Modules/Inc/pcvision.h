@@ -1,80 +1,28 @@
 /**
  *******************************************************************************
- * @file      : DR16.h
+ * @file      : pcvision.h
  * @brief     :
  * @history   :
  *  Version     Date            Author          Note
- *  V0.9.0      2023-05-03    Jerry Gong        1. <note>
+ *  V0.9.0      yyyy-mm-dd      <author>        1. <note>
  *******************************************************************************
  * @attention :
  *******************************************************************************
- *  Copyright (c) 2023 Reborn Team, USTB.
+ *  Copyright (c) 2024 Reborn Team, University of Science and Technology Beijing.
  *  All Rights Reserved.
  *******************************************************************************
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DR16_H_
-#define __DR16_H_
+#ifndef __PCVISION_H__
+#define __PCVISION_H__
 
 #ifdef __cplusplus
 
 /* Includes ------------------------------------------------------------------*/
-#include "drv_uart.h"
 /* Exported macro ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
-struct DR16_DatePack_t {
-    int16_t ch0;
-    int16_t ch1;
-    int16_t ch2;
-    int16_t ch3;
-    uint8_t s1;
-    uint8_t s2;
-    int16_t mouse_x;
-    int16_t mouse_y;
-    int16_t mouse_z;
-    uint8_t press_l;
-    uint8_t press_r;
-    uint16_t key;
-    uint8_t KeyPress[18];
-};
-
-/**
- *  设定键鼠模式下的按键ID
- */
-typedef enum {
-    KEY_W = 0,
-    KEY_S,
-    KEY_A,
-    KEY_D,
-    KEY_SHIFT,
-    KEY_CTRL,
-    KEY_Q,
-    KEY_E,
-    KEY_R,
-    KEY_F,
-    KEY_G,
-    KEY_Z,
-    KEY_X,
-    KEY_C,
-    KEY_V,
-    KEY_B,
-    MOUSE_L,
-    MOUSE_R,
-} KeyMousePressKeyID;
-
-class DBUS_Def
-{
-   public:
-    DR16_DatePack_t Pack;
-    void SbusToRc(uint8_t *pData);
-    void KeyVoluation();
-
-   private:
-};
-
 /* Exported variables --------------------------------------------------------*/
-extern DBUS_Def Remote;
 /* Exported function prototypes ----------------------------------------------*/
 
 #endif
@@ -84,14 +32,34 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+
+#include "IMU.h"
+#include "cmsis_os.h"
+#include "drv_uart.h"
+#include "usart.h"
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
+
+typedef struct
+{
+    /* data */
+    float yaw_angle;
+    float pitch_angle;
+    float distance;
+} Vision_Rx;
+
 /* Exported variables --------------------------------------------------------*/
+extern TaskHandle_t VisionRec_Handle;
+extern TaskHandle_t VisionSend_Handle;
+extern Vision_Rx Vision_RxPack;
+extern int Aim_Flag;
 /* Exported function prototypes ----------------------------------------------*/
+void VisionPack(uint8_t *pData);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __FILE_H_ */
+#endif /* __PCVISION_H__ */

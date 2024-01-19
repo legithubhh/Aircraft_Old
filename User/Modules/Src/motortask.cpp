@@ -119,7 +119,7 @@ void RemotePitchPidDemo2()
 }
 
 /**
- * @brief       遥控模式——俯角Pitch轴模式3:为方便调节，Pitch轴调节过程将模式3阶段设置为起始阶段。
+ * @brief       遥控模式——俯角Pitch轴模式3:为方便调节，Pitch轴调节过程将模式3阶段设置为俯角调试起始阶段。
  *   @arg       None
  * @retval      None
  * @note        None
@@ -346,19 +346,20 @@ void YawRotation()
 void RemoteAimingTargetSet()
 {
     // 摩擦轮目标值设置
-    gimbaltarget.friction_wheel_target = 6.5f * 60.f * 3591.f / 187.f;         // =7500 依据减速比n*(60*3591/187)得n转每秒
+    gimbaltarget.friction_wheel_target = 100.f * 60.f;                         // =6000 无减速箱，依据n*60得n转每秒
     friction_wheel_3508[0].pid_rpm.ref = -gimbaltarget.friction_wheel_target;  // 左摩擦轮顺时针转动，右摩擦轮逆时针转动。
 
     friction_wheel_3508[1].pid_rpm.ref = gimbaltarget.friction_wheel_target;
 
     // 拨弹盘目标值设置
-    gimbaltarget.turn_magazine_target = -1.125f * 60.0f * 36.0f;  // =2430 依据减速比n*(60*36/1)得n转每秒
+    /*35s支援时间，估计25s发弹时间，发弹量500，一转8发，62.5转，则预计比赛时速度需要62.5/25=2.5转/秒*/
+    gimbaltarget.turn_magazine_target = -1.125f * 60.0f * 36.0f;  // =2430 依据减速比n*60*（36/1）得n转每秒
     turn_magazine_2006.pid_rpm.ref = gimbaltarget.turn_magazine_target;
 
     // Pitch轴目标值设置
-    if (Remote.Pack.ch1 < 1.f && Remote.Pack.ch1 > -1.f) {
+    if (Remote.Pack.ch1 < 2.f && Remote.Pack.ch1 > -2.f) {
         gimbaltarget.pitch_target = Remote.Pack.ch1 * 0.f;
-    } else if (Remote.Pack.ch1 > 1.f) {
+    } else if (Remote.Pack.ch1 > 2.f) {
         gimbaltarget.pitch_target = Remote.Pack.ch1 / 660.f * 22.f;
     }  // 实测仰角为负，俯角为正————抬头遥杆向后输出负值，低头遥杆向前输出正值
     else {
@@ -368,7 +369,7 @@ void RemoteAimingTargetSet()
     pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // Yaw轴目标值设置
-    if (Remote.Pack.ch2 < 5.f && Remote.Pack.ch2 > -5.f) {
+    if (Remote.Pack.ch2 < 2.f && Remote.Pack.ch2 > -2.f) {
         gimbaltarget.yaw_target = Remote.Pack.ch2 * 0.f;
     } else {
         gimbaltarget.yaw_target = Remote.Pack.ch2 / 660.f * 30.f;
@@ -386,7 +387,7 @@ void RemoteAimingTargetSet()
 void KeymouseAimingTargetSet()
 {
     // 摩擦轮目标值设置
-    gimbaltarget.friction_wheel_target = 7500;
+    gimbaltarget.friction_wheel_target = 100.f * 60.f;                         // =6000 无减速箱，依据n*60得n转每秒
     friction_wheel_3508[0].pid_rpm.ref = -gimbaltarget.friction_wheel_target;  // 左摩擦轮顺时针转动，右摩擦轮逆时针转动。
 
     friction_wheel_3508[1].pid_rpm.ref = gimbaltarget.friction_wheel_target;
@@ -396,15 +397,16 @@ void KeymouseAimingTargetSet()
     turn_magazine_2006.pid_rpm.ref = gimbaltarget.turn_magazine_target;
 
     // Pitch轴目标值设置
-    if (Remote.Pack.mouse_y < 2.f && Remote.Pack.mouse_y > -2.f) {
+    if (Remote.Pack.mouse_y < 1.f && Remote.Pack.mouse_y > -1.f) {
         Remote.Pack.mouse_y = 0.f;
-    }                                                             // 死区设置，防止误漂移。
-    gimbaltarget.pitch_target += Remote.Pack.mouse_y * 0.00085f;  // 根据鼠标灵敏度结合操作手的操作习惯实际测试后调整数值。测试鼠标DPI为1600。鼠标前移抬头，后移低头。                                                        // 实测仰角为负，俯角为正————鼠标向后输出正值，鼠标向前输出负值
-    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 22.0f);          // 遥控器右手柄上下通道控制，抬头最大值角度为14度，低头最大角度为22度
+    }  // 死区设置，防止误漂移。
+    /* 实测陀螺仪抬头为负，低头为正，第一人称，鼠标前移抬头，后移低头*/
+    gimbaltarget.pitch_target += Remote.Pack.mouse_y * 0.00085f;  // 根据鼠标灵敏度结合操作手的操作习惯实际测试后调整数值。测试鼠标DPI为1600。鼠标前移负值，后移正值。
+    VAL_LIMIT(gimbaltarget.pitch_target, -14.0f, 22.0f);          // 抬头最大值角度为14度，低头最大角度为22度
     pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
 
     // Yaw轴目标值设置
-    if (Remote.Pack.mouse_x < 2.f && Remote.Pack.mouse_x > -2.f) {
+    if (Remote.Pack.mouse_x < 1.f && Remote.Pack.mouse_x > -1.f) {
         Remote.Pack.mouse_x = 0.f;
     }
     gimbaltarget.yaw_target += Remote.Pack.mouse_x * 0.00075f;
@@ -421,7 +423,7 @@ void KeymouseAimingTargetSet()
 void AutoAimingTargetSet()
 {
     // 摩擦轮目标值设置
-    gimbaltarget.friction_wheel_target = 7500;
+    gimbaltarget.friction_wheel_target = 100.f * 60.f;                         // =6000 无减速箱，依据n*60得n转每秒
     friction_wheel_3508[0].pid_rpm.ref = -gimbaltarget.friction_wheel_target;  // 左摩擦轮顺时针转动，右摩擦轮逆时针转动。
 
     friction_wheel_3508[1].pid_rpm.ref = gimbaltarget.friction_wheel_target;

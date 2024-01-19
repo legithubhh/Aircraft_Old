@@ -50,6 +50,10 @@ extern osThreadId insTaskHandle;
 extern osThreadId leftLegCtrlTaskHandle;
 extern osThreadId chassisTaskHandle;
 extern osThreadId rightLegCtrlTaskHandle;
+extern osThreadId gimbalTaskHandle;
+extern osThreadId visionReciveTaskHandle;
+extern osThreadId visionTransmitTaskHandle;
+extern osThreadId refereeTaskHandle;
 
 /* Exported function prototypes ----------------------------------------------*/
 

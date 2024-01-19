@@ -19,6 +19,8 @@
 /* Private constants ---------------------------------------------------------*/
 /* Private types -------------------------------------------------------------*/
 uint32_t DR16CallBack();
+uint32_t RefereeCallback();
+uint32_t VisionReciveCallback(void);
 void UserCAN1DataUpdate(CANx_Message* CANx_RxMsg);
 void UserCAN2DataUpdate(CANx_Message* CANx_RxMsg);
 
@@ -37,6 +39,8 @@ void UserSystemCommInit()
     CANInit(&hcan1, UserCAN1RxCpltCallBack);
     CANInit(&hcan2, UserCAN2RxCpltCallBack);
     UserUARTReceiveIT(&huart3, 18, DR16CallBack);
+    UserUARTReceiveIT(&huart1, 256, RefereeCallback);
+    UserUARTReceiveIT(&huart6, 9, VisionReciveCallback);
 }
 
 /**
@@ -144,4 +148,99 @@ void RemoteTask()
     if (xTaskNotifyWait(0x00000000, 0xFFFFFFFF, (uint32_t*)&Dbus_Buffer, xLastWakeTime_t) == pdTRUE) {
         Remote.SbusToRc(Dbus_Buffer);
     }
+}
+
+/**
+ * @brief       Referee receive&Transmit function
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+void RefereeTask()
+{
+    uint8_t* Referee_Buffer;
+    TickType_t xLastWakeTime_t = pdMS_TO_TICKS(10);
+
+    if (xTaskNotifyWait(0x00000000, 0xFFFFFFFF, (uint32_t*)&Referee_Buffer, xLastWakeTime_t) == pdTRUE) {
+        RefereePack(Referee_Buffer);
+    }
+}
+
+/**
+ * @brief       Referee call back function
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+uint32_t RefereeCallback()
+{
+    static BaseType_t* pxHigherPriorityTaskWoken;
+    if (refereeTaskHandle != NULL) {
+        xTaskNotifyFromISR(refereeTaskHandle, (uint32_t)UART_Instance[3].rx_buffer, eSetValueWithOverwrite, pxHigherPriorityTaskWoken);
+    }
+    return 0;
+}
+
+/**
+ * @brief       Vision receive function
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+void VisionReciveTask()
+{
+    uint8_t* Vision_Buffer;
+    TickType_t xLastWakeTime_t = pdMS_TO_TICKS(10);
+
+    if (xTaskNotifyWait(0x00000000, 0xFFFFFFFF, (uint32_t*)&Vision_Buffer, xLastWakeTime_t) == pdTRUE) {
+        VisionPack(Vision_Buffer);
+    }
+}
+
+/**
+ * @brief       Vision call back function
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+uint32_t VisionReciveCallback(void)
+{
+    static BaseType_t* pxHigherPriorityTaskWoken;
+    if (visionReciveTaskHandle != NULL) {
+        xTaskNotifyFromISR(visionReciveTaskHandle, (uint32_t)UART_Instance[2].rx_buffer, eSetValueWithOverwrite, pxHigherPriorityTaskWoken);
+    }
+    return 0;
+}
+
+/**
+ * @brief       Vision transmit function
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+void VisionTransmitTask()
+{
+    uint8_t Tx[14];
+    int SendAngle[2];
+
+    SendAngle[0] = (int)((INS.Pitch + 180) * 10);  // pitch
+    SendAngle[1] = (int)((INS.Yaw + 180) * 10);    // yaw
+
+    Tx[0] = 'R';
+    Tx[1] = 'M';
+    Tx[2] = 'S';
+    Tx[3] = 'L';
+
+    Tx[4] = SendAngle[1] / 1000 + 48;
+    Tx[5] = SendAngle[1] % 1000 / 100 + 48;
+    Tx[6] = SendAngle[1] % 100 / 10 + 48;
+    Tx[7] = SendAngle[1] % 10 + 48;
+
+    Tx[8] = SendAngle[0] / 1000 + 48;
+    Tx[9] = SendAngle[0] % 1000 / 100 + 48;
+    Tx[10] = SendAngle[0] % 100 / 10 + 48;
+    Tx[11] = SendAngle[0] % 10 + 48;
+
+    UserUARTSendData(UART_Instance[2].huart, Tx, 13u, UART_TRANSMIT_IT);
+    vTaskDelay(10);
 }
