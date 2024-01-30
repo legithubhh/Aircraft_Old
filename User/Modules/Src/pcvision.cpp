@@ -9,15 +9,13 @@
  */
 #include "pcvision.h"
 
-Vision_Rx Vision_RxPack;
+VisionRx vision_rxpack;
 uint16_t Vision_lost = 0x00;
-int Aim_Flag = 1;
+int aim_flag = 1;
 
 void VisionPack(uint8_t* pData)
 {
     static float last_vision[2];
-    static float LastEular = 0.0f;
-    static float NowEular = 0.0f;
     static int16_t count;
 
     if (pData == NULL) {
@@ -26,13 +24,13 @@ void VisionPack(uint8_t* pData)
 
     if (pData[0] == 'R' && pData[1] == 'M') {
         if (pData[2] != 'A' && pData[3] != 'A') {
-            Aim_Flag = 1;
+            aim_flag = 1;
             Vision_lost = 0;
-            Vision_RxPack.yaw_angle = (float)(int16_t)(pData[3] << 8 | pData[2]) / 100.0f;    // yaw
-            Vision_RxPack.pitch_angle = (float)(int16_t)(pData[5] << 8 | pData[4]) / 100.0f;  // pitch
+            vision_rxpack.yaw_angle = (float)(int16_t)(pData[3] << 8 | pData[2]) / 100.0f;    // yaw
+            vision_rxpack.pitch_angle = (float)(int16_t)(pData[5] << 8 | pData[4]) / 100.0f;  // pitch
 
-            last_vision[0] = Vision_RxPack.yaw_angle;
-            last_vision[1] = Vision_RxPack.pitch_angle;
+            last_vision[0] = vision_rxpack.yaw_angle;
+            last_vision[1] = vision_rxpack.pitch_angle;
         }
 
         else {
@@ -40,9 +38,9 @@ void VisionPack(uint8_t* pData)
         }
 
         if (Vision_lost == 14) {
-            Aim_Flag = 0;
-            Vision_RxPack.yaw_angle = 0.0f;
-            Vision_RxPack.pitch_angle = last_vision[1];
+            aim_flag = 0;
+            vision_rxpack.yaw_angle = 0.0f;
+            vision_rxpack.pitch_angle = last_vision[1];
         }
     }
 }

@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Communication.h"
+#include "INS.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -126,23 +127,23 @@ void MX_FREERTOS_Init(void)
     defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
     /* definition and creation of remoteTask */
-    osThreadDef(remoteTask, StartRemoteTask, osPriorityAboveNormal, 0, 128);
+    osThreadDef(remoteTask, StartRemoteTask, osPriorityNormal, 0, 128);
     remoteTaskHandle = osThreadCreate(osThread(remoteTask), NULL);
 
     /* definition and creation of insTask */
-    osThreadDef(insTask, StartINSTask, osPriorityNormal, 0, 256);
+    osThreadDef(insTask, StartINSTask, osPriorityAboveNormal, 0, 256);
     insTaskHandle = osThreadCreate(osThread(insTask), NULL);
 
     /* definition and creation of legCtrlTask */
-    osThreadDef(legCtrlTask, StartLegCtrlTask, osPriorityHigh, 0, 512);
+    osThreadDef(legCtrlTask, StartLegCtrlTask, osPriorityHigh, 0, 128);
     legCtrlTaskHandle = osThreadCreate(osThread(legCtrlTask), NULL);
 
     /* definition and creation of chassisTask */
-    osThreadDef(chassisTask, StartChassisTask, osPriorityHigh, 0, 1024);
+    osThreadDef(chassisTask, StartChassisTask, osPriorityHigh, 0, 128);
     chassisTaskHandle = osThreadCreate(osThread(chassisTask), NULL);
 
     /* definition and creation of wheelrCtrlTask */
-    osThreadDef(wheelrCtrlTask, StartWheelCtrlTask, osPriorityNormal, 0, 512);
+    osThreadDef(wheelrCtrlTask, StartWheelCtrlTask, osPriorityNormal, 0, 128);
     wheelrCtrlTaskHandle = osThreadCreate(osThread(wheelrCtrlTask), NULL);
 
     /* USER CODE BEGIN RTOS_THREADS */
@@ -150,7 +151,7 @@ void MX_FREERTOS_Init(void)
     osThreadDef(gimbalTask, StartGimbalTask, osPriorityHigh, 0, 512);
     gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
 
-    osThreadDef(refereeTask, StartRefereeTask, osPriorityHigh, 0, 256);
+    osThreadDef(refereeTask, StartRefereeTask, osPriorityNormal, 0, 256);
     refereeTaskHandle = osThreadCreate(osThread(refereeTask), NULL);
 
     osThreadDef(visionReciveTask, StartVisionReciveTask, osPriorityNormal, 0, 128);

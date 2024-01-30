@@ -48,13 +48,11 @@ typedef struct
     float yaw_angle;
     float pitch_angle;
     float distance;
-} Vision_Rx;
+} VisionRx;
 
 /* Exported variables --------------------------------------------------------*/
-extern TaskHandle_t VisionRec_Handle;
-extern TaskHandle_t VisionSend_Handle;
-extern Vision_Rx Vision_RxPack;
-extern int Aim_Flag;
+extern VisionRx vision_rxpack;
+extern int aim_flag;
 /* Exported function prototypes ----------------------------------------------*/
 void VisionPack(uint8_t *pData);
 

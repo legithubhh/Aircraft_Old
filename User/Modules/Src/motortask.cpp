@@ -9,10 +9,10 @@
 /**
  *******************************************************************************
  * @file      : motortask.cpp
- * @brief     : 此文件包含所有电机的
+ * @brief     : 此文件专门用于所有电机的参数设置，输出计算。
  * @history   :
  *  Version     Date            Author          Note
- *  V0.9.0      yyyy-mm-dd      <author>        1. <note>
+ *  V0.9.0      2024-01-20      <JasonLi>        1. <note>
  *******************************************************************************
  * @attention :
  *******************************************************************************
@@ -49,7 +49,8 @@ void RemoteAimingTargetSet();
 void KeymouseAimingTargetSet();
 void AutoAimingTargetSet();
 void MotorStart();
-void GimbalStopTargetSet();
+void GimbalStop1TargetSet();
+void GimbalStop2TargetSet();
 
 /**
  * @brief       集中修改双轴电机的初始位置偏移量
@@ -90,8 +91,8 @@ void PidSetRemote()
     /**
      * Yaw轴6020电机的PID参数初始化
      */
-    yaw_motor_6020.pid_ang.Set(45.f, 0.f, 10.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);             // n转每秒
-    yaw_motor_6020.pid_rpm.Set(25.f, 0.001f, 10.f, (3000.f + 300.f) * 0.8f, 500.f * 1.f, 500.f * 5.f, 3000.f * 0.8f);  // 限定最大值，防止突震，输出限幅-30000-30000
+    yaw_motor_6020.pid_ang.Set(45.f, 10.f, 10.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);          // n转每秒
+    yaw_motor_6020.pid_rpm.Set(25.f, 10.f, 10.f, (3000.f + 300.f) * 0.6f, 500.f * 10.f, 500.f * 5.f, 3000.f * 2.f);  // 限定最大值，防止突震，输出限幅-30000-30000
 }
 
 /**
@@ -163,8 +164,8 @@ void RemotePitchPidDemo5()
  */
 void RemoteYawPidDemo1()
 {
-    yaw_motor_6020.pid_ang.Set(40.f, 0.f, 5.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(20.f, 0.001f, 5.f, (3000.f + 300.f) * 0.6f, 500.f * 1.f, 500.f * 10.f, 3000.f * 0.6f);
+    yaw_motor_6020.pid_ang.Set(50.f, 5.f, 5.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
+    yaw_motor_6020.pid_rpm.Set(30.f, 5.f, 5.f, (3000.f + 300.f) * 0.5f, 500.f * 4.f, 500.f * 10.f, 3000.f * 1.f);
 }
 
 /**
@@ -175,8 +176,8 @@ void RemoteYawPidDemo1()
  */
 void RemoteYawPidDemo2()
 {
-    yaw_motor_6020.pid_ang.Set(60.f, 0.f, 1.f, (60.f + 6.f) * 15.f, 1.f * 15.f, 6.f * 15.f, 60.f * 15.f);
-    yaw_motor_6020.pid_rpm.Set(50.f, 0.f, 1.f, (3000.f + 300.f) * 3.f, 500.f * 10.f, 500.f * 10.f, 3000.f * 3.f);
+    yaw_motor_6020.pid_ang.Set(60.f, 0.f, 1.f, (60.f + 6.f) * 15.f, 0.f * 15.f, 6.f * 15.f, 60.f * 15.f);
+    yaw_motor_6020.pid_rpm.Set(50.f, 0.f, 1.f, (3000.f + 300.f) * 3.f, 0.f * 10.f, 500.f * 10.f, 3000.f * 3.f);
 }
 
 /**
@@ -256,16 +257,29 @@ void AutoControlMode()
 }
 
 /**
- * @brief       急停模式
+ * @brief       急停模式1
  *   @arg       None
  * @retval      None
  * @note        None
  */
-void GimbalStopControlMode()
+void GimbalStop1ControlMode()
 {
-    GimbalStopTargetSet();
+    GimbalStop1TargetSet();
     MotorStart();
 }
+
+/**
+ * @brief       急停模式2
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+void GimbalStop2ControlMode()
+{
+    GimbalStop2TargetSet();
+    MotorStart();
+}
+
 
 /**
  * @brief       开启云台电机PID输出计算
@@ -451,12 +465,12 @@ void AutoAimingTargetSet()
 }
 
 /**
- * @brief      急停模式，电机目标值设置，程序控制摩擦轮速度为0，拨弹盘速度为0，双轴回到0度位置
+ * @brief      发弹急停模式，程序控制摩擦轮速度为0，拨弹盘速度为0，双轴可用
  *   @arg       None
  * @retval      None
  * @note        None
  */
-void GimbalStopTargetSet()
+void GimbalStop1TargetSet()
 {
     // 摩擦轮目标值设置
     gimbaltarget.friction_wheel_target = 0;
@@ -497,5 +511,32 @@ void GimbalStopTargetSet()
         gimbaltarget.yaw_target = Remote.Pack.ch2 / 660.f * 30.f;
     }
     VAL_LIMIT(gimbaltarget.yaw_target, -30.0f, 30.0f);  // 遥控器左手柄左右通道控制，最大值为向左向右30度
+    yaw_motor_6020.pid_ang.ref = -gimbaltarget.yaw_target;
+}
+
+/**
+ * @brief      发弹急停模式，程序控制摩擦轮速度为0，拨弹盘速度为0，双轴回到0度位置
+ *   @arg       None
+ * @retval      None
+ * @note        None
+ */
+void GimbalStop2TargetSet()
+{
+    // 摩擦轮目标值设置
+    gimbaltarget.friction_wheel_target = 0;
+    friction_wheel_3508[0].pid_rpm.ref = -gimbaltarget.friction_wheel_target;
+
+    friction_wheel_3508[1].pid_rpm.ref = gimbaltarget.friction_wheel_target;
+
+    // 拨弹盘目标值设置
+    gimbaltarget.turn_magazine_target = 0;
+    turn_magazine_2006.pid_rpm.ref = gimbaltarget.turn_magazine_target;
+
+    // Pitch轴目标值设置
+    gimbaltarget.pitch_target = 0;
+    pitch_motor_2006.pid_ang.ref = gimbaltarget.pitch_target;
+
+    // Yaw轴目标值设置
+    gimbaltarget.yaw_target = 0;
     yaw_motor_6020.pid_ang.ref = -gimbaltarget.yaw_target;
 }

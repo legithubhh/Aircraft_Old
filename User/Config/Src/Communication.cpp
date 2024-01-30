@@ -1,7 +1,7 @@
 /**
  *******************************************************************************
  * @file      : Communication.cpp
- * @brief     :
+ * @brief     :此文件用于CAN，USART通讯（包括遥控器，裁判系统和摄像头）收发任务函数的配置和线程编写
  * @history   :
  *  Version     Date            Author          Note
  *  V0.9.0      yyyy-mm-dd      <author>        1. <note>
@@ -241,6 +241,6 @@ void VisionTransmitTask()
     Tx[10] = SendAngle[0] % 100 / 10 + 48;
     Tx[11] = SendAngle[0] % 10 + 48;
 
-    UserUARTSendData(UART_Instance[2].huart, Tx, 13u, UART_TRANSMIT_IT);
+    UserUARTSendData(&huart6, Tx, 13u, UART_TRANSMIT_IT);
     vTaskDelay(10);
 }

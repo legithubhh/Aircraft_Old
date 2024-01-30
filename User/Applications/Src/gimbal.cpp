@@ -2,9 +2,20 @@
  *******************************************************************************
  * @file      : gimbal.cpp
  * @brief     : 云台总任务及各个子函数任务
+ *              s1  1||3   s2  1   遥控器手控模式
+ *              s1  2      s2  1   遥控器自瞄模式
+ *              s1  x      s2  3   键鼠模式
+ *              s1  x      s2  3   持续按R键时   键鼠自瞄模式
+ *              s1  x      s2  2   摩擦轮急停模式（双轴可遥控操纵）
+ *              ch0
+ *              ch1                Pitch轴（遥杆前移低头，后移抬头）
+ *              ch2                Yaw轴（遥杆左移云台左转，右移云台右转）
+ *              ch3
+ *              mouse_x            Yaw轴（鼠标左移云台左转，右移云台右转）
+ *              mouse_y            Pitch轴（鼠标前移抬头，后移低头）
  * @history   :
  *  Version     Date            Author          Note
- *  V0.9.0      yyyy-mm-dd      <author>        1. <note>
+ *  V0.9.0      2024-01-20      <JasonLi>        1. <note>
  *******************************************************************************
  * @attention :
  *******************************************************************************
@@ -114,10 +125,9 @@ void GimbalTask()
         }
     }
 
-    // 右拨杆在下，发弹急停模式
+    // 右拨杆在下，急停模式
     if (Remote.Pack.s2 == 2) {
-        PidFlagInit(remote_pid_flag);
-        // 左拨杆在上或中，遥控器手控模式 OR 左拨杆在下，遥控器切换到自瞄模式
+        // 左拨杆在上或中，发弹急停 OR 左拨杆在下，切换到全停模式（拨弹盘，摩擦轮目标速度设为0，双轴目标位置设为0度）
         if (Remote.Pack.s1 == 1 || Remote.Pack.s1 == 3) {
             PidFlagInit(remote_pid_flag);
             // 当Pitch轴误差达到一定范围时，更改PID参数进行自适应调节，分俯仰角调节以适应重心后偏
@@ -140,19 +150,19 @@ void GimbalTask()
             }
 
             // 当Yaw轴误差达到一定范围时，更改PID参数进行自适应调节
-            if (yaw_motor_6020.pid_ang.err[0] > 15.f || yaw_motor_6020.pid_ang.err[0] < -15.f) {
+            if (yaw_motor_6020.pid_ang.err[0] > 3.5f || yaw_motor_6020.pid_ang.err[0] < -3.5f) {
                 yawpid_switchflag = base_pid;
-            } else if (yaw_motor_6020.pid_ang.err[0] > 1.5f || yaw_motor_6020.pid_ang.err[0] < -1.5f) {
+            } else if (yaw_motor_6020.pid_ang.err[0] > 2.5f || yaw_motor_6020.pid_ang.err[0] < -2.5f) {
                 yawpid_switchflag = yaw1_pid;
             } else {
                 yawpid_switchflag = yaw2_pid;
             }
             PidSetSwitch();
-            GimbalStopControlMode();
+            GimbalStop1ControlMode();
         } else {
-            PidFlagInit(autoaim_pid_flag);
+            PidFlagInit(remote_pid_flag);
             PidSetSwitch();
-            GimbalStopControlMode();
+            GimbalStop2ControlMode();
         }
     }
     // 集中发送CAN信号

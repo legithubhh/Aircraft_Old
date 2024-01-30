@@ -181,7 +181,8 @@ void MotorOffset();
 void RemoteControlMode();
 void KeymouseControlMode();
 void AutoControlMode();
-void GimbalStopControlMode();
+void GimbalStop1ControlMode();
+void GimbalStop2ControlMode();
 
 #endif
 

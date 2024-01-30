@@ -37,7 +37,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "INS.h"
 #include "gimbal.h"
 #include "pcvision.h"
 #include "referee.h"
@@ -53,7 +52,6 @@ void RemoteTask();
 void RefereeTask();
 void VisionReciveTask();
 void VisionTransmitTask();
-void DMMotorEnable();
 
 #ifdef __cplusplus
 }
