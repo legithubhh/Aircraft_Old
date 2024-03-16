@@ -36,7 +36,7 @@ void PidSetSwitch();
 void PidFlagInit(PidsetModeID);
 /**
  * @brief       遥控器管理云台所有电机运行任务
- *   @arg       None
+ * @arg         None
  * @retval      None
  * @note        遥控器s1对应左拨杆，s2对应右拨杆，上，中，下分别对应数值1，3,2
  */
@@ -69,13 +69,13 @@ void GimbalTask()
             }
 
             // 当Yaw轴误差达到一定范围时，更改PID参数进行自适应调节
-            if (yaw_motor_6020.pid_ang.err[0] > 15.f || yaw_motor_6020.pid_ang.err[0] < -15.f) {
-                yawpid_switchflag = base_pid;
-            } else if (yaw_motor_6020.pid_ang.err[0] > 2.5f || yaw_motor_6020.pid_ang.err[0] < -2.5f) {
-                yawpid_switchflag = yaw1_pid;
-            } else {
-                yawpid_switchflag = yaw2_pid;
-            }
+            // if (yaw_motor_6020.pid_ang.err[0] > 15.f || yaw_motor_6020.pid_ang.err[0] < -15.f) {
+            //     yawpid_switchflag = base_pid;
+            // } else if (yaw_motor_6020.pid_ang.err[0] > 2.5f || yaw_motor_6020.pid_ang.err[0] < -2.5f) {
+            //     yawpid_switchflag = yaw1_pid;
+            // } else {
+            //     yawpid_switchflag = yaw2_pid;
+            // }
             PidSetSwitch();
             RemoteControlMode();
         } else {
@@ -157,6 +157,7 @@ void GimbalTask()
             } else {
                 yawpid_switchflag = yaw2_pid;
             }
+
             PidSetSwitch();
             GimbalStop1ControlMode();
         } else {
@@ -167,13 +168,13 @@ void GimbalTask()
     }
     // 集中发送CAN信号
     CANx_PackProcess_Data(&hcan1, CAN_GIMBAL_SEND_ID, 0x08, friction_wheel_3508[0].pid_rpm.output, friction_wheel_3508[1].pid_rpm.output,
-                          turn_magazine_2006.pid_rpm.output, pitch_motor_2006.pid_rpm.output);                      // CAN1总线0X200对应电机ID，ID号1-4分别为摩擦轮3508电机1，摩擦轮3508电机2，拨弹盘2006电机，Pitch轴2006电机
-    CANx_PackProcess_Data(&hcan1, CAN_GIMBAL_SEND_ELSE_ID, 0x08, yaw_motor_6020.pid_rpm.output, 0000, 0000, 0000);  // CAN1总线0X1FF对应电机ID，ID号1为Yaw轴6020
+                          turn_magazine_2006.pid_rpm.output, pitch_motor_2006.pid_rpm.output);  // CAN1总线0X200对应电机ID，ID号1-4分别为摩擦轮3508电机1，摩擦轮3508电机2，拨弹盘2006电机，Pitch轴2006电机
+    CANx_PackProcess_Data(&hcan1, CAN_GIMBAL_SEND_ELSE_ID, 0x08, -5000, 0000, 0000, 0000);      // CAN1总线0X1FF对应电机ID，ID号1为Yaw轴6020
 
     // 设置C6020电调进入快速设置ID模式
     // CANC6020IdSet();
 
-    // 以下为测试代码专用
+    // 以下为测试代码专用 yaw_motor_6020.pid_rpm.output
 
     // TurnMagazineConstently();
 }

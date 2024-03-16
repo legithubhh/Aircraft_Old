@@ -19,8 +19,8 @@
 #ifdef __cplusplus
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
 #include <stdlib.h>
-
 /* Exported macro ------------------------------------------------------------*/
 #define VAL_LIMIT(val, min, max) \
     if (val <= min) {            \
@@ -36,7 +36,7 @@ class PID_Def
    public:
     float ref;
     float fdb;
-    float output;
+    int16_t output;
     float kp;
     float ki;
     float kd;
@@ -46,7 +46,7 @@ class PID_Def
     float output_max;
 
     float component[3];
-    float err[6];
+    float err[2];
 
     float NormalCalc();
     void Set(float _kp, float _ki, float _kd, float _kp_m, float _ki_m, float _kd_m, float _output_m)
